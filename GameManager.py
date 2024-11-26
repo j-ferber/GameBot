@@ -1,5 +1,6 @@
 from TriviaGame import TriviaGame
 from DiceGame import DiceGame
+from PokerGame import PokerGame
 
 class GameManager:
     def __init__(self):
@@ -7,9 +8,11 @@ class GameManager:
 
     async def start_game(self, channel, game_type):
         if game_type == 'trivia':
-            game = TriviaGame(channel)
+            game = TriviaGame(channel, self)
         elif game_type == 'dice':
-            game = DiceGame(channel)
+            game = DiceGame(channel, self)
+        elif game_type == 'poker':
+            game = PokerGame(channel, self)
         
         self.games.append(game) 
         await game.start()

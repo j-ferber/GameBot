@@ -2,12 +2,13 @@ from abc import ABC, abstractmethod
 import asyncio
 
 class Game(ABC):
-    def __init__(self, channel):
+    def __init__(self, channel, gm):
         """
         Initializes the Game with a channel where it will be played.
         """
         self.channel = channel
-        self.active = True  
+        self.active = True
+        self.gm = gm
 
     @abstractmethod
     async def start(self):

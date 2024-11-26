@@ -1,8 +1,8 @@
 from Game import Game
 
 class TriviaGame(Game):
-    def __init__(self, channel):
-        super().__init__(channel)
+    def __init__(self, channel, gm):
+        super().__init__(channel, gm)
         self.question = None
         self.answers = []
         self.correct_answer = None
@@ -47,3 +47,4 @@ class TriviaGame(Game):
             self.channel.send("Correct!")
         else:
             self.channel.send("Incorrect. The correct answer is Paris.")
+        self.gm.end_game(self)

@@ -28,6 +28,11 @@ async def start_trivia(ctx):
     await ctx.send("Dice game started!")
     await gm.start_game(ctx.channel, "dice")
 
+@bot.command(name="start_poker")
+async def start_poker(ctx):
+    await ctx.send("Poker game started!")
+    await gm.start_game(ctx.channel, "poker")
+
 @bot.event
 async def on_reaction_add(reaction, user):
     if user.bot:
