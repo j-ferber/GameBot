@@ -15,7 +15,7 @@ class PokerGame(Game):
         self.deck = self.newDeck()
         random.shuffle(self.deck)
         self.hand = self.pickCards(list(), self.deck, 5) # Place 5 cards in hand from deck
-        msg = f"Your Poker Hand:\n{str(self.hand)}\n\nWhat cards would you like to keep?"
+        msg = f"Your Poker Hand:\n{str(self.hand)}\n\nWhat cards would you like to redraw?"
         self.message = await self.channel.send(msg)
         reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "✅"]
         for reaction in reactions:
@@ -39,7 +39,7 @@ class PokerGame(Game):
         # Check if the checkmark is chosen
         if selected_index == 5:  # Checkmark emoji
             await self.channel.send(f"{user.display_name} has confirmed their selection.")
-            self.selection = self.selected_indices  # Return the list of selected indices
+            await self.redraw(self.selected_indices)  # Return the list of selected indices
             return
 
         # Add the selected index if it's not already in the list
@@ -48,6 +48,17 @@ class PokerGame(Game):
             await self.channel.send(
                 f"{user.display_name} selected card index {selected_index + 1}."
             )
+
+    async def redraw(self, selected_indices):
+        self.selection = selected_indices
+        self.selection.sort(reverse=True)
+        numCardsRemoved = len(self.selection)
+        for i in self.selection:
+            self.hand.pop(i)
+            #instead of popping, just set equal to new card.
+        self.hand = self.pickCards(self.hand, self.deck, numCardsRemoved)
+        msg = f"Your Poker Hand:\n{str(self.hand)}\n\nThese are your new cards!"
+        await self.channel.send(msg)
 
     def newDeck(self):
         deck = []
