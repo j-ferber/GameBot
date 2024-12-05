@@ -38,16 +38,14 @@ class PokerGame(Game):
         
         # Check if the checkmark is chosen
         if selected_index == 5:  # Checkmark emoji
-            await self.channel.send(f"{user.display_name} has confirmed their selection.")
+            #await self.channel.send(f"{user.display_name} has confirmed their selection.")
             await self.redraw(self.selected_indices)  # Return the list of selected indices
             return
 
         # Add the selected index if it's not already in the list
         if selected_index not in self.selected_indices:
             self.selected_indices.append(selected_index)
-            await self.channel.send(
-                f"{user.display_name} selected card index {selected_index + 1}."
-            )
+            #await self.channel.send(f"{user.display_name} selected card index {selected_index + 1}.")
 
     async def redraw(self, selected_indices):
         self.selection = selected_indices
@@ -57,8 +55,9 @@ class PokerGame(Game):
             self.hand.pop(i)
             #instead of popping, just set equal to new card.
         self.hand = self.pickCards(self.hand, self.deck, numCardsRemoved)
-        msg = f"Your Poker Hand:\n{str(self.hand)}\n\nThese are your new cards!"
+        msg = f"Your New Poker Hand:\n{str(self.hand)}\n"
         await self.channel.send(msg)
+        await self.checkHand()
 
     def newDeck(self):
         deck = []
@@ -92,4 +91,27 @@ class PokerGame(Game):
             deck.remove(card)
             hand.append(card)
         return hand
+    
+    async def checkHand(self):
+        msg = "\n"
+        values = [card[0] for card in self.hand]
+        suits = [card[1] for card in self.hand]
+        value_counts = {value: values.count(value) for value in set(values)}
+
+        if len(set(suits)) == 1:
+            msg += "You have a Flush!"
+        elif 4 in value_counts.values():
+            msg += "You have Four of a Kind!"
+        elif 3 in value_counts.values() and 2 in value_counts.values():
+            msg += "You have a Full House!"
+        elif 3 in value_counts.values():
+            msg += "You have Three of a Kind!"
+        elif list(value_counts.values()).count(2) == 2:
+            msg += "You have Two Pairs!"
+        elif 2 in value_counts.values():
+            msg += "You have One Pair!"
+        else:
+            msg += "You have Junk."
+
+        await self.channel.send(msg)
 
