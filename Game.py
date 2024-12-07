@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 import asyncio
+import os
+import json
 
 class Game(ABC):
     def __init__(self, channel, gm):
@@ -30,3 +32,30 @@ class Game(ABC):
         Returns whether the game is still active.
         """
         return self.active  
+
+    def score(self, user):
+        """
+        Updates the score of the user in the game.
+        """
+        if os.path.exists('data.json'):
+            with open('data.json', 'r') as f:
+                try:
+                    scores = json.load(f)
+                except json.JSONDecodeError:
+                    scores = []
+        else:
+            scores = []
+
+        username = str(user)
+        user_found = False
+        for entry in scores:
+            if entry['username'] == username:
+                entry['score'] += 1
+                user_found = True
+                break
+
+        if not user_found:
+            scores.append({'username': username, 'score': 1})
+
+        with open('data.json', 'w') as f:
+            json.dump(scores, f, indent=4)
