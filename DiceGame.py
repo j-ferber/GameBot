@@ -33,7 +33,7 @@ class DiceGame(Game):
         guess = reactions.index(str(reaction.emoji)) + 1
         if guess == self.roll_result:
             await self.channel.send(f'🎉 Correct! The roll was {self.roll_result}.')
-            self.score(user)
+            self.score(user, 10)
         else:
             await self.channel.send(f'❌ Incorrect. The roll was {self.roll_result}.')
 

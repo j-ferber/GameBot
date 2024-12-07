@@ -73,7 +73,7 @@ class TriviaGame(Game):
         selected_index = emoji_to_index[str(reaction.emoji)]
         if selected_index == self.correct_answer_index:
             await self.channel.send(f"{user.display_name} answered correctly!")
-            self.score(user)
+            self.score(user, 5)
         else:
             await self.channel.send(f"{user.display_name} answered incorrectly.")
 

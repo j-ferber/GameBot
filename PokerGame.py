@@ -39,7 +39,7 @@ class PokerGame(Game):
         # Check if the checkmark is chosen
         if selected_index == 5:  # Checkmark emoji
             #await self.channel.send(f"{user.display_name} has confirmed their selection.")
-            await self.redraw(self.selected_indices)  # Return the list of selected indices
+            await self.redraw(user, self.selected_indices)  # Return the list of selected indices
             return
 
         # Add the selected index if it's not already in the list
@@ -47,7 +47,7 @@ class PokerGame(Game):
             self.selected_indices.append(selected_index)
             #await self.channel.send(f"{user.display_name} selected card index {selected_index + 1}.")
 
-    async def redraw(self, selected_indices):
+    async def redraw(self, user, selected_indices):
         self.selection = selected_indices
         self.selection.sort(reverse=True)
         numCardsRemoved = len(self.selection)
@@ -57,7 +57,7 @@ class PokerGame(Game):
         self.hand = self.pickCards(self.hand, self.deck, numCardsRemoved)
         msg = f"Your New Poker Hand:\n{str(self.hand)}\n"
         await self.channel.send(msg)
-        await self.checkHand()
+        await self.checkHand(user)
 
     def newDeck(self):
         deck = []
@@ -92,24 +92,30 @@ class PokerGame(Game):
             hand.append(card)
         return hand
     
-    async def checkHand(self):
+    async def checkHand(self, user):
         msg = "\n"
         values = [card[0] for card in self.hand]
         suits = [card[1] for card in self.hand]
         value_counts = {value: values.count(value) for value in set(values)}
 
         if len(set(suits)) == 1:
-            msg += "You have a Flush!"
+            msg += "You have a Flush! Score increased by 5!"
+            self.score(user, 5)
         elif 4 in value_counts.values():
-            msg += "You have Four of a Kind!"
+            msg += "You have Four of a Kind! Score increased by 10!"
+            self.score(user, 10)
         elif 3 in value_counts.values() and 2 in value_counts.values():
-            msg += "You have a Full House!"
+            msg += "You have a Full House! Score increased by 7!"
+            self.score(user, 7)
         elif 3 in value_counts.values():
-            msg += "You have Three of a Kind!"
+            msg += "You have Three of a Kind! Score increased by 3!"
+            self.score(user, 3)
         elif list(value_counts.values()).count(2) == 2:
-            msg += "You have Two Pairs!"
+            msg += "You have Two Pairs! Score increased by 2!"
+            self.score(user, 2)
         elif 2 in value_counts.values():
-            msg += "You have One Pair!"
+            msg += "You have One Pair! Score increased by 1!"
+            self.score(user, 1)
         else:
             msg += "You have Junk."
 

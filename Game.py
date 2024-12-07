@@ -33,7 +33,7 @@ class Game(ABC):
         """
         return self.active  
 
-    def score(self, user):
+    def score(self, user, score=1):
         """
         Updates the score of the user in the game.
         """
@@ -50,7 +50,7 @@ class Game(ABC):
         user_found = False
         for entry in scores:
             if entry['username'] == username:
-                entry['score'] += 1
+                entry['score'] += score
                 user_found = True
                 break
 
@@ -59,3 +59,5 @@ class Game(ABC):
 
         with open('data.json', 'w') as f:
             json.dump(scores, f, indent=4)
+
+        
