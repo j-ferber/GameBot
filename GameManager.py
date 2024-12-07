@@ -3,7 +3,8 @@ from DiceGame import DiceGame
 from PokerGame import PokerGame
 
 class GameManager:
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
         self.games = []
 
     async def start_game(self, channel, game_type):
